@@ -6,7 +6,7 @@
 import SwiftUI
 
 @main
-struct ISM_AppApp: App {
+struct ISMApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

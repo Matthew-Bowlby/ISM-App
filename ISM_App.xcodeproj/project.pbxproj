@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F301F7452B9030AC0038FD5E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F301F7442B9030AC0038FD5E /* ContentView.swift */; };
+		F301F7472B903C360038FD5E /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F301F7462B903C360038FD5E /* HealthData.swift */; };
 		F3E733DF2B82BA380001FB4B /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E733DE2B82BA380001FB4B /* App.swift */; };
-		F3E733E12B82BA380001FB4B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E733E02B82BA380001FB4B /* ContentView.swift */; };
+		F3E733E12B82BA380001FB4B /* BLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E733E02B82BA380001FB4B /* BLE.swift */; };
 		F3E733E32B82BA390001FB4B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3E733E22B82BA390001FB4B /* Assets.xcassets */; };
 		F3E733E62B82BA390001FB4B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3E733E52B82BA390001FB4B /* Preview Assets.xcassets */; };
 		F3E733F02B82BA390001FB4B /* ISM_AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E733EF2B82BA390001FB4B /* ISM_AppTests.swift */; };
@@ -34,9 +36,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F301F7442B9030AC0038FD5E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F301F7462B903C360038FD5E /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
 		F3E733DB2B82BA380001FB4B /* ISM App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ISM App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3E733DE2B82BA380001FB4B /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
-		F3E733E02B82BA380001FB4B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F3E733E02B82BA380001FB4B /* BLE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLE.swift; sourceTree = "<group>"; };
 		F3E733E22B82BA390001FB4B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F3E733E52B82BA390001FB4B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F3E733EB2B82BA390001FB4B /* ISM AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ISM AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,7 +99,9 @@
 			isa = PBXGroup;
 			children = (
 				F3E733DE2B82BA380001FB4B /* App.swift */,
-				F3E733E02B82BA380001FB4B /* ContentView.swift */,
+				F301F7462B903C360038FD5E /* HealthData.swift */,
+				F3E733E02B82BA380001FB4B /* BLE.swift */,
+				F301F7442B9030AC0038FD5E /* ContentView.swift */,
 				F3E733E22B82BA390001FB4B /* Assets.xcassets */,
 				F3E733E42B82BA390001FB4B /* Preview Content */,
 			);
@@ -257,8 +263,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F3E733E12B82BA380001FB4B /* ContentView.swift in Sources */,
+				F3E733E12B82BA380001FB4B /* BLE.swift in Sources */,
 				F3E733DF2B82BA380001FB4B /* App.swift in Sources */,
+				F301F7452B9030AC0038FD5E /* ContentView.swift in Sources */,
+				F301F7472B903C360038FD5E /* HealthData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
