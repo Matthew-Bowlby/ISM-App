@@ -38,14 +38,14 @@
 /* Begin PBXFileReference section */
 		F301F7442B9030AC0038FD5E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F301F7462B903C360038FD5E /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
-		F3E733DB2B82BA380001FB4B /* ISM App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ISM App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3E733DB2B82BA380001FB4B /* ISM_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ISM_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3E733DE2B82BA380001FB4B /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		F3E733E02B82BA380001FB4B /* BLE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLE.swift; sourceTree = "<group>"; };
 		F3E733E22B82BA390001FB4B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F3E733E52B82BA390001FB4B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		F3E733EB2B82BA390001FB4B /* ISM AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ISM AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3E733EB2B82BA390001FB4B /* ISM_AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ISM_AppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3E733EF2B82BA390001FB4B /* ISM_AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISM_AppTests.swift; sourceTree = "<group>"; };
-		F3E733F52B82BA390001FB4B /* ISM AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ISM AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3E733F52B82BA390001FB4B /* ISM_AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ISM_AppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3E733F92B82BA390001FB4B /* ISM_AppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISM_AppUITests.swift; sourceTree = "<group>"; };
 		F3E733FB2B82BA390001FB4B /* ISM_AppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISM_AppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -78,7 +78,7 @@
 		F3E733D22B82BA380001FB4B = {
 			isa = PBXGroup;
 			children = (
-				F3E733DD2B82BA380001FB4B /* ISM App */,
+				F3E733DD2B82BA380001FB4B /* ISM_App */,
 				F3E733EE2B82BA390001FB4B /* ISM AppTests */,
 				F3E733F82B82BA390001FB4B /* ISM AppUITests */,
 				F3E733DC2B82BA380001FB4B /* Products */,
@@ -88,14 +88,14 @@
 		F3E733DC2B82BA380001FB4B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F3E733DB2B82BA380001FB4B /* ISM App.app */,
-				F3E733EB2B82BA390001FB4B /* ISM AppTests.xctest */,
-				F3E733F52B82BA390001FB4B /* ISM AppUITests.xctest */,
+				F3E733DB2B82BA380001FB4B /* ISM_App.app */,
+				F3E733EB2B82BA390001FB4B /* ISM_AppTests.xctest */,
+				F3E733F52B82BA390001FB4B /* ISM_AppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F3E733DD2B82BA380001FB4B /* ISM App */ = {
+		F3E733DD2B82BA380001FB4B /* ISM_App */ = {
 			isa = PBXGroup;
 			children = (
 				F3E733DE2B82BA380001FB4B /* App.swift */,
@@ -105,7 +105,7 @@
 				F3E733E22B82BA390001FB4B /* Assets.xcassets */,
 				F3E733E42B82BA390001FB4B /* Preview Content */,
 			);
-			path = "ISM App";
+			path = ISM_App;
 			sourceTree = "<group>";
 		};
 		F3E733E42B82BA390001FB4B /* Preview Content */ = {
@@ -136,9 +136,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F3E733DA2B82BA380001FB4B /* ISM App */ = {
+		F3E733DA2B82BA380001FB4B /* ISM_App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F3E733FF2B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM App" */;
+			buildConfigurationList = F3E733FF2B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM_App" */;
 			buildPhases = (
 				F3E733D72B82BA380001FB4B /* Sources */,
 				F3E733D82B82BA380001FB4B /* Frameworks */,
@@ -148,14 +148,14 @@
 			);
 			dependencies = (
 			);
-			name = "ISM App";
+			name = ISM_App;
 			productName = "ISM App";
-			productReference = F3E733DB2B82BA380001FB4B /* ISM App.app */;
+			productReference = F3E733DB2B82BA380001FB4B /* ISM_App.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F3E733EA2B82BA390001FB4B /* ISM AppTests */ = {
+		F3E733EA2B82BA390001FB4B /* ISM_AppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F3E734022B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM AppTests" */;
+			buildConfigurationList = F3E734022B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM_AppTests" */;
 			buildPhases = (
 				F3E733E72B82BA390001FB4B /* Sources */,
 				F3E733E82B82BA390001FB4B /* Frameworks */,
@@ -166,14 +166,14 @@
 			dependencies = (
 				F3E733ED2B82BA390001FB4B /* PBXTargetDependency */,
 			);
-			name = "ISM AppTests";
+			name = ISM_AppTests;
 			productName = "ISM AppTests";
-			productReference = F3E733EB2B82BA390001FB4B /* ISM AppTests.xctest */;
+			productReference = F3E733EB2B82BA390001FB4B /* ISM_AppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		F3E733F42B82BA390001FB4B /* ISM AppUITests */ = {
+		F3E733F42B82BA390001FB4B /* ISM_AppUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F3E734052B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM AppUITests" */;
+			buildConfigurationList = F3E734052B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM_AppUITests" */;
 			buildPhases = (
 				F3E733F12B82BA390001FB4B /* Sources */,
 				F3E733F22B82BA390001FB4B /* Frameworks */,
@@ -184,9 +184,9 @@
 			dependencies = (
 				F3E733F72B82BA390001FB4B /* PBXTargetDependency */,
 			);
-			name = "ISM AppUITests";
+			name = ISM_AppUITests;
 			productName = "ISM AppUITests";
-			productReference = F3E733F52B82BA390001FB4B /* ISM AppUITests.xctest */;
+			productReference = F3E733F52B82BA390001FB4B /* ISM_AppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -212,7 +212,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F3E733D62B82BA380001FB4B /* Build configuration list for PBXProject "ISM App" */;
+			buildConfigurationList = F3E733D62B82BA380001FB4B /* Build configuration list for PBXProject "ISM_App" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -225,9 +225,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F3E733DA2B82BA380001FB4B /* ISM App */,
-				F3E733EA2B82BA390001FB4B /* ISM AppTests */,
-				F3E733F42B82BA390001FB4B /* ISM AppUITests */,
+				F3E733DA2B82BA380001FB4B /* ISM_App */,
+				F3E733EA2B82BA390001FB4B /* ISM_AppTests */,
+				F3E733F42B82BA390001FB4B /* ISM_AppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -292,12 +292,12 @@
 /* Begin PBXTargetDependency section */
 		F3E733ED2B82BA390001FB4B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F3E733DA2B82BA380001FB4B /* ISM App */;
+			target = F3E733DA2B82BA380001FB4B /* ISM_App */;
 			targetProxy = F3E733EC2B82BA390001FB4B /* PBXContainerItemProxy */;
 		};
 		F3E733F72B82BA390001FB4B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F3E733DA2B82BA380001FB4B /* ISM App */;
+			target = F3E733DA2B82BA380001FB4B /* ISM_App */;
 			targetProxy = F3E733F62B82BA390001FB4B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -507,7 +507,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ISM App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ISM App";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ISM_App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ISM_App";
 			};
 			name = Debug;
 		};
@@ -526,7 +526,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ISM App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ISM App";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ISM_App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ISM_App";
 			};
 			name = Release;
 		};
@@ -567,7 +567,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F3E733D62B82BA380001FB4B /* Build configuration list for PBXProject "ISM App" */ = {
+		F3E733D62B82BA380001FB4B /* Build configuration list for PBXProject "ISM_App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F3E733FD2B82BA390001FB4B /* Debug */,
@@ -576,7 +576,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F3E733FF2B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM App" */ = {
+		F3E733FF2B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM_App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F3E734002B82BA3A0001FB4B /* Debug */,
@@ -585,7 +585,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F3E734022B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM AppTests" */ = {
+		F3E734022B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM_AppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F3E734032B82BA3A0001FB4B /* Debug */,
@@ -594,7 +594,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F3E734052B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM AppUITests" */ = {
+		F3E734052B82BA3A0001FB4B /* Build configuration list for PBXNativeTarget "ISM_AppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F3E734062B82BA3A0001FB4B /* Debug */,
