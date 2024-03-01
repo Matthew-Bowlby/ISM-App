@@ -12,10 +12,12 @@ protocol Command {
 }
 
 struct SendData: Command {
-    let data: Data = Data([0x01]) // example data, change later
+    let data: Data
+    
+    init(data: Data) {
+        self.data = data
+    }
 }
-
-
 
 class BluetoothManager : NSObject {
     private var centralManager: CBCentralManager!
@@ -54,6 +56,14 @@ extension BluetoothManager: CBCentralManagerDelegate {
             centralManager.connect(peripheral, options: nil)
         }
     }
+    
+    func disconnect() {
+        guard let peripheral = esp32Peripheral else {
+            print("Error: No peripheral connected.")
+            return
+        }
+        centralManager.cancelPeripheralConnection(peripheral)
+    }
 }
 
 
@@ -72,7 +82,7 @@ extension BluetoothManager: CBPeripheralDelegate {
         guard let characteristics = service.characteristics else { return }
         for characteristic in characteristics {
             if characteristic.uuid == characteristicUUID {
-                
+                commandCharacteristic = characteristic
             }
         }
     }
@@ -85,4 +95,3 @@ extension BluetoothManager: CBPeripheralDelegate {
         peripheral.writeValue(command.data, for: characteristic, type: .withResponse)
     }
 }
-

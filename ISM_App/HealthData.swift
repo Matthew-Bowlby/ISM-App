@@ -8,6 +8,7 @@ import HealthKit
 
 class HealthDataManager {
     let healthStore = HKHealthStore()
+    var bluetoothManager: BluetoothManager
     
     enum HealthDataType {
         case stepCount
@@ -15,6 +16,10 @@ class HealthDataManager {
         case moveTime
         case standTime
         case activeEnergyBurned
+    }
+    
+    init() {
+        self.bluetoothManager = BluetoothManager()
     }
     
     // Request authorization from user to get Health app data.
@@ -76,12 +81,19 @@ class HealthDataManager {
                 return
             }
             
-            // Debug: remove later?
             for sample in results {
                 let value = sample.quantity.doubleValue(for: .count())
-                print("Steps: \\(value")
+                self.transmitHealthData(value, for: type)
             }
-            
         }
+        
+        healthStore.execute(query)
+    }
+    
+    func transmitHealthData(_ value: Double, for type: HealthDataType) {
+        let data = "\(type): \(value)".data(using: .utf8)!
+        let command = SendData(data: data)
+        
+        bluetoothManager.sendCommand(command: command)
     }
 }
