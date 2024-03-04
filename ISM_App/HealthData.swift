@@ -8,6 +8,7 @@ import HealthKit
 
 class HealthDataManager {
     let healthStore = HKHealthStore()
+    var authorization: Bool = false
     var bluetoothManager: BluetoothManager
     
     enum HealthDataType {
@@ -37,9 +38,11 @@ class HealthDataManager {
         healthStore.requestAuthorization(toShare: nil, read: typesToRead) { (success, error) in
             if success {
                 print("HealthKit authorization granted.")
+                self.authorization = true
             }
             else {
                 print("HealthKit authorization denied.")
+                self.authorization = false
             }
         }
     }
@@ -55,16 +58,16 @@ class HealthDataManager {
         
         // Get specified health type.
         switch type {
-        case .stepCount:
-            sampleType = HKObjectType.quantityType(forIdentifier: .stepCount)!
-        case .exerciseTime:
-            sampleType = HKObjectType.quantityType(forIdentifier: .appleExerciseTime)!
-        case .moveTime:
-            sampleType = HKObjectType.quantityType(forIdentifier: .appleMoveTime)!
-        case .standTime:
-            sampleType = HKObjectType.quantityType(forIdentifier: .appleStandTime)!
-        case .activeEnergyBurned:
-            sampleType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
+            case .stepCount:
+                sampleType = HKObjectType.quantityType(forIdentifier: .stepCount)!
+            case .exerciseTime:
+                sampleType = HKObjectType.quantityType(forIdentifier: .appleExerciseTime)!
+            case .moveTime:
+                sampleType = HKObjectType.quantityType(forIdentifier: .appleMoveTime)!
+            case .standTime:
+                sampleType = HKObjectType.quantityType(forIdentifier: .appleStandTime)!
+            case .activeEnergyBurned:
+                sampleType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
         }
         
         // Make sure sample type is valid.
@@ -77,7 +80,7 @@ class HealthDataManager {
         let query = HKSampleQuery(sampleType: unwrappedSampleType, predicate: nil, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, results, error) in
             
             guard let results = results as? [HKQuantitySample], error == nil else {
-                print("Error fetching steps data: \\(error!.localizedDescription)")
+                print("Error fetching steps data: \(error!.localizedDescription)")
                 return
             }
             
@@ -94,6 +97,6 @@ class HealthDataManager {
         let data = "\(type): \(value)".data(using: .utf8)!
         let command = SendData(data: data)
         
-        bluetoothManager.sendCommand(command: command)
+            //bluetoothManager.sendCommand(command: command)
     }
 }

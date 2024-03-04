@@ -19,57 +19,125 @@ struct SendData: Command {
     }
 }
 
-class BluetoothManager : NSObject {
-    private var centralManager: CBCentralManager!
-    private var esp32Peripheral: CBPeripheral?
+class BluetoothManager : NSObject, ObservableObject {
+    private var centralManager: CBCentralManager?
+    @Published var esp32Peripheral: CBPeripheral?
     private var commandCharacteristic: CBCharacteristic?
-    private let esp32ServiceUUID = CBUUID(string: "UUID")
-    private let characteristicUUID = CBUUID(string: "UUID")
+    private let esp32ServiceUUID = CBUUID(string: "c0fe")
+    private let characteristicUUID = CBUUID(string: "3dee")
     
-    
+    private var peripherals: [CBPeripheral] = []
+    @Published var peripheralNames: [String] = []
+
     override init() {
         super.init()
-        centralManager = CBCentralManager(delegate: self, queue: .main)
+        self.centralManager = CBCentralManager(delegate: self, queue: .main)
     }
 }
 
 // Central Manager
 extension BluetoothManager: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if central.state == .poweredOn {
-            centralManager?.scanForPeripherals(withServices: [esp32ServiceUUID], options: nil)
+        switch central.state {
+        case .poweredOn:
+            centralManager?.scanForPeripherals(withServices: nil, options: nil)
+            print("Bluetooth is powered on.")
+        case .poweredOff:
+            // Handle powered off state
+            print("Bluetooth is powered off.")
+        case .resetting:
+            // Handle resetting state
+            print("Bluetooth is resetting.")
+        case .unauthorized:
+            // Handle unauthorized state
+            print("Unauthorized to use Bluetooth.")
+        case .unsupported:
+            // Handle unsupported state
+            print("Bluetooth is not supported on this device.")
+        case .unknown:
+            // Handle unknown state
+            print("Bluetooth state is unknown.")
+        @unknown default:
+            fatalError("Unhandled Bluetooth state.")
         }
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        esp32Peripheral = peripheral
-        esp32Peripheral?.delegate = self
-        centralManager.connect(esp32Peripheral!, options: nil)
+        let name = String(describing: peripheral.name)
+        let rssi = RSSI.intValue
+        
+        if name != "nil" {
+            print("Discovered \(name) at \(rssi)")
+        }
+        
+        if peripheral.name == "ESP32-BLE-Server" {
+            print("Found Device!")
+            esp32Peripheral = peripheral
+            centralManager?.stopScan()
+        }
     }
+    
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        print("Connected!")
+        peripheral.delegate = self
         peripheral.discoverServices([esp32ServiceUUID])
     }
-    
-    func connectToDevice() {
-        if let peripheral = esp32Peripheral {
-            centralManager.connect(peripheral, options: nil)
-        }
+
+    func connectToDevice(completion: @escaping (Bool) -> Void) {
+        // Check if esp32Peripheral is not nil
+         guard let peripheral = self.esp32Peripheral else {
+             print("Error: Peripheral is nil")
+             return
+         }
+         
+         // Check if centralManager is powered on
+         guard centralManager?.state == .poweredOn else {
+             print("Error: Bluetooth is not powered on")
+             return
+         }
+         
+         // Set central manager delegate if not already set
+         if centralManager?.delegate == nil {
+             centralManager?.delegate = self
+         }
+         
+         // Attempt to connect to the peripheral
+         centralManager?.connect(peripheral, options: nil)
+        
+         // 1.5 second delay currently.
+         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+             if peripheral.state == .connected {
+                 completion(true)
+             } else {
+                 completion(false)
+             }
+         }
     }
     
     func disconnect() {
-        guard let peripheral = esp32Peripheral else {
+        guard let peripheral = self.esp32Peripheral else {
             print("Error: No peripheral connected.")
             return
         }
-        centralManager.cancelPeripheralConnection(peripheral)
+        centralManager?.cancelPeripheralConnection(peripheral)
+        print("Disconnected.")
     }
 }
 
 
 extension BluetoothManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        guard let services = peripheral.services else { return }
+        if let error = error {
+            print("Error discovering services: \(error.localizedDescription)")
+            return
+        }
+        
+        guard let services = peripheral.services else {
+            print("No services discovered.")
+            return
+        }
+        
         for service in services {
             if service.uuid == esp32ServiceUUID {
                 peripheral.discoverCharacteristics([characteristicUUID], for: service)
@@ -79,19 +147,30 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        guard let characteristics = service.characteristics else { return }
+        if let error = error {
+            print("Error discovering characteristics for service \(service.uuid): \(error.localizedDescription)")
+            return
+        }
+        
+        guard let characteristics = service.characteristics else {
+            print("No characteristics discovered for service \(service.uuid)")
+            return
+        }
+        
         for characteristic in characteristics {
             if characteristic.uuid == characteristicUUID {
-                commandCharacteristic = characteristic
+                self.commandCharacteristic = characteristic
+                print("Found command characteristic: \(characteristic.uuid)")
             }
         }
     }
     
     func sendCommand(command: Command) {
-        guard let peripheral = esp32Peripheral, let characteristic = commandCharacteristic else {
+        guard let peripheral = self.esp32Peripheral, let characteristic = self.commandCharacteristic else {
             print("Error: ESP32 not connected or characteristic not found.")
             return
         }
         peripheral.writeValue(command.data, for: characteristic, type: .withResponse)
     }
 }
+
