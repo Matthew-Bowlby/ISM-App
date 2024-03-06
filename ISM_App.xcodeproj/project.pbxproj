@@ -38,6 +38,7 @@
 /* Begin PBXFileReference section */
 		F301F7442B9030AC0038FD5E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F301F7462B903C360038FD5E /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
+		F3E3701E2B92479B001D1D4B /* ISM_App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ISM_App.entitlements; sourceTree = "<group>"; };
 		F3E733DB2B82BA380001FB4B /* ISM_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ISM_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3E733DE2B82BA380001FB4B /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		F3E733E02B82BA380001FB4B /* BLE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLE.swift; sourceTree = "<group>"; };
@@ -98,6 +99,7 @@
 		F3E733DD2B82BA380001FB4B /* ISM_App */ = {
 			isa = PBXGroup;
 			children = (
+				F3E3701E2B92479B001D1D4B /* ISM_App.entitlements */,
 				F3E733DE2B82BA380001FB4B /* App.swift */,
 				F301F7462B903C360038FD5E /* HealthData.swift */,
 				F3E733E02B82BA380001FB4B /* BLE.swift */,
@@ -427,9 +429,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ISM_App/ISM_App.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"ISM App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ISM_App/Preview Content\"";
 				DEVELOPMENT_TEAM = HUJG5SA8HQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -445,8 +449,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Senior-Design.ISM-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -462,9 +468,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ISM_App/ISM_App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"ISM App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ISM_App/Preview Content\"";
 				DEVELOPMENT_TEAM = HUJG5SA8HQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -480,6 +487,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Senior-Design.ISM-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
