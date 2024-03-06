@@ -26,8 +26,7 @@ class BluetoothManager : NSObject, ObservableObject {
     private let esp32ServiceUUID = CBUUID(string: "c0fe")
     private let characteristicUUID = CBUUID(string: "3dee")
     
-    private var peripherals: [CBPeripheral] = []
-    @Published var peripheralNames: [String] = []
+    var mostRecentPeripheral: String? = nil
 
     override init() {
         super.init()
@@ -68,6 +67,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
         
         if name != "nil" {
             print("Discovered \(name) at \(rssi)")
+            mostRecentPeripheral = peripheral.name
         }
         
         if peripheral.name == "ESP32-BLE-Server" {
@@ -84,7 +84,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
         peripheral.discoverServices([esp32ServiceUUID])
     }
 
-    func connectToDevice(completion: @escaping (Bool) -> Void) {
+    func connect(completion: @escaping (Bool) -> Void) {
         // Check if esp32Peripheral is not nil
          guard let peripheral = self.esp32Peripheral else {
              print("Error: Peripheral is nil")
@@ -122,6 +122,15 @@ extension BluetoothManager: CBCentralManagerDelegate {
         }
         centralManager?.cancelPeripheralConnection(peripheral)
         print("Disconnected.")
+    }
+    
+    // Check if peripheral is still connected.
+    func checkPeripheralActivity() -> Bool {
+        guard let peripheral = esp32Peripheral else {
+            return false
+        }
+        
+        return peripheral.state == .connected
     }
 }
 
