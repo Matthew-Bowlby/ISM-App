@@ -9,94 +9,96 @@ import HealthKit
 class HealthDataManager {
     let healthStore = HKHealthStore()
     var authorization: Bool = false
-    var bluetoothManager: BluetoothManager
     
-    enum HealthDataType {
-        case stepCount
-        case exerciseTime
-        case moveTime
-        case standTime
-        case activeEnergyBurned
-    }
-    
-    init() {
-        self.bluetoothManager = BluetoothManager()
-    }
-    
-    // Request authorization from user to get Health app data.
-    func requestAuthorization() {
-        // Data to read from health app.
-        let typesToRead: Set<HKSampleType> = [
-            HKObjectType.quantityType(forIdentifier: .stepCount)!,
-            HKObjectType.quantityType(forIdentifier: .appleExerciseTime)!,
-            HKObjectType.quantityType(forIdentifier: .appleMoveTime)!,
-            HKObjectType.quantityType(forIdentifier: .appleStandTime)!,
-            HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
-        ]
-        
-        // Request authorization and send message based on answer.
-        healthStore.requestAuthorization(toShare: nil, read: typesToRead) { (success, error) in
-            if success {
-                print("HealthKit authorization granted.")
-                self.authorization = true
-            }
-            else {
-                print("HealthKit authorization denied.")
-                self.authorization = false
-            }
-        }
-    }
+    // Data to read from health app.
+    let typesToRead: Set = [
+        HKQuantityType(.stepCount),
+        HKQuantityType(.activeEnergyBurned),
+        HKQuantityType(.heartRate)
+    ]
     
     // Fetch data for specific type.
-    func fetchData(for type: HealthDataType) {
-        guard HKHealthStore.isHealthDataAvailable() else {
-            print("Health data is not available.")
-            return
+    func fetchData() {
+        for dataType in typesToRead {
+            healthStore.enableBackgroundDelivery(for: dataType, frequency: HKUpdateFrequency.immediate, withCompletion: { (success, error) in
+                if let unwrappedError = error {
+                    print("*** Error: could not enable background delivery: \(unwrappedError) ***")
+                }
+                if success {
+                    print("Background delivery enabled")
+                }
+            })
+                
+            let query = HKObserverQuery(sampleType: dataType, predicate: nil) { query, completionHandler, error in
+                    if let error = error {
+                        print(" *** Error while observing changes: \(error.localizedDescription) ***")
+                        completionHandler()
+                        return
+                    }
+                    self.fetchLatestData(for: dataType)
+                    completionHandler()
+                }
+                
+                healthStore.execute(query)
+                                                 }
+    }
+    
+    func fetchLatestData(for sampleType: HKSampleType) {
+        switch sampleType.identifier {
+        case HKQuantityTypeIdentifier.heartRate.rawValue:
+            // Handle heart rate data
+            fetchLatestHeartRateData { result in
+                switch result {
+                case .success(let heartRate):
+                    print("Latest heart rate: \(heartRate) bpm")
+                case .failure(let error):
+                    print("Error fetching heart rate: \(error.localizedDescription)")
+                }
+            }
+            /*
+        case HKQuantityTypeIdentifier.stepCount.rawValue:
+            // Handle step count data
+            fetchLatestStepCountData { result in
+                switch result {
+                case .success(let stepCount):
+                    print("Latest step count: \(stepCount) steps")
+                case .failure(let error):
+                    print("Error fetching step count: \(error.localizedDescription)")
+                }
+            }
+             */
+        default:
+            break
         }
-        
-        var sampleType: HKQuantityType?
-        
-        // Get specified health type.
-        switch type {
-            case .stepCount:
-                sampleType = HKObjectType.quantityType(forIdentifier: .stepCount)!
-            case .exerciseTime:
-                sampleType = HKObjectType.quantityType(forIdentifier: .appleExerciseTime)!
-            case .moveTime:
-                sampleType = HKObjectType.quantityType(forIdentifier: .appleMoveTime)!
-            case .standTime:
-                sampleType = HKObjectType.quantityType(forIdentifier: .appleStandTime)!
-            case .activeEnergyBurned:
-                sampleType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
-        }
-        
-        // Make sure sample type is valid.
-        guard let unwrappedSampleType = sampleType else {
-            print("Invalid health data type entered.")
-            return
-        }
-        
-        // Get health data.
-        let query = HKSampleQuery(sampleType: unwrappedSampleType, predicate: nil, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, results, error) in
-            
-            guard let results = results as? [HKQuantitySample], error == nil else {
-                print("Error fetching steps data: \(error!.localizedDescription)")
+    }
+    
+    func fetchLatestHeartRateData(completion: @escaping (Result<Double, Error>) -> Void) {
+        let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate)!
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+        let query = HKSampleQuery(sampleType: heartRateType, predicate: nil, limit: 1, sortDescriptors: [sortDescriptor]) { query, samples, error in
+            if let error = error {
+                completion(.failure(error))
                 return
             }
             
-            for sample in results {
-                let value = sample.quantity.doubleValue(for: .count())
-                self.transmitHealthData(value, for: type)
+            guard let sample = samples?.first as? HKQuantitySample else {
+                completion(.failure(NSError(domain: "YourAppErrorDomain", code: 0, userInfo: [NSLocalizedDescriptionKey: "No heart rate data available"])))
+                return
             }
+            
+            let heartRateValue = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
+            completion(.success(heartRateValue))
         }
         
         healthStore.execute(query)
     }
     
+    /*
     func transmitHealthData(_ value: Double, for type: HealthDataType) {
         let data = "\(type): \(value)".data(using: .utf8)!
         let command = SendData(data: data)
         
             //bluetoothManager.sendCommand(command: command)
     }
+     */
 }
