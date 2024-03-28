@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F301F7452B9030AC0038FD5E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F301F7442B9030AC0038FD5E /* ContentView.swift */; };
 		F301F7472B903C360038FD5E /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F301F7462B903C360038FD5E /* HealthData.swift */; };
+		F37CB7DB2BB6137000AA60C6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CB7DA2BB6137000AA60C6 /* Settings.swift */; };
 		F3E733DF2B82BA380001FB4B /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E733DE2B82BA380001FB4B /* App.swift */; };
 		F3E733E12B82BA380001FB4B /* BLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E733E02B82BA380001FB4B /* BLE.swift */; };
 		F3E733E32B82BA390001FB4B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3E733E22B82BA390001FB4B /* Assets.xcassets */; };
@@ -38,6 +39,7 @@
 /* Begin PBXFileReference section */
 		F301F7442B9030AC0038FD5E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F301F7462B903C360038FD5E /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
+		F37CB7DA2BB6137000AA60C6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		F3E3701E2B92479B001D1D4B /* ISM_App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ISM_App.entitlements; sourceTree = "<group>"; };
 		F3E733DB2B82BA380001FB4B /* ISM_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ISM_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3E733DE2B82BA380001FB4B /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				F301F7462B903C360038FD5E /* HealthData.swift */,
 				F3E733E02B82BA380001FB4B /* BLE.swift */,
 				F301F7442B9030AC0038FD5E /* ContentView.swift */,
+				F37CB7DA2BB6137000AA60C6 /* Settings.swift */,
 				F3E733E22B82BA390001FB4B /* Assets.xcassets */,
 				F3E733E42B82BA390001FB4B /* Preview Content */,
 			);
@@ -269,6 +272,7 @@
 				F3E733DF2B82BA380001FB4B /* App.swift in Sources */,
 				F301F7452B9030AC0038FD5E /* ContentView.swift in Sources */,
 				F301F7472B903C360038FD5E /* HealthData.swift in Sources */,
+				F37CB7DB2BB6137000AA60C6 /* Settings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

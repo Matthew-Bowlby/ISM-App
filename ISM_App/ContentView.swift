@@ -4,18 +4,19 @@
 //
 
 import SwiftUI
-import HealthKitUI
 
 struct ContentView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State private var isConnected: Bool = false
     @State private var HKtrigger: Bool = false
     @State private var authorization: Bool = false
     @State private var showingAlert = false
-    @State private var bluetoothDebugToggle = false
+    @State private var bluetoothDebugToggle = true
     @State private var healthDataToggle = false
     @State private var dots = "."
     @State private var timer: Timer?
-    @ObservedObject var bluetoothManager = BluetoothManager()
+    
+    var bluetoothManager = BluetoothManager()
     var healthDataManager = HealthDataManager()
     
     var body: some View {
@@ -61,81 +62,41 @@ struct ContentView: View {
                     
                 }
                 else {
-                    if healthDataToggle {
-                        // Connect button.
-                        Button(action: {
-                            guard let peripheral = bluetoothManager.esp32Peripheral else { return }
-                            bluetoothManager.connect() { success in
-                                if success {
-                                    // Connection successful, send the command
-                                    isConnected = true
-                                    bluetoothManager.sendCommand(command: SendData(data: "Connected".data(using: .utf8)!))
-                                } else {
-                                    // Connection failed, handle the error
-                                    isConnected = false
-                                    print("Failed to connect to the device.")
-                                }
-                            }
-                        }) {
-                            Text("Connect")
-                                .font(.system(size: 28))
-                                .padding(15)
-                                .padding([.leading, .trailing])
-                                .background(.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(30)
-                            
-                        }
-                        .disabled(bluetoothManager.esp32Peripheral == nil)
-                        .buttonStyle(PlainButtonStyle())
-                        .onAppear() {
-                            if HKHealthStore.isHealthDataAvailable() {
-                                HKtrigger.toggle()
+                    // Connect button.
+                    Button(action: {
+                        guard bluetoothManager.esp32Peripheral != nil else { return }
+                        bluetoothManager.connect() { success in
+                            if success {
+                                // Connection successful, send the command
+                                isConnected = true
+                                bluetoothManager.sendCommand(command: SendData(data: "Connected".data(using: .utf8)!))
+                            } else {
+                                // Connection failed, handle the error
+                                isConnected = false
+                                print("Failed to connect to the device.")
                             }
                         }
-                        .healthDataAccessRequest(store: healthDataManager.healthStore,
-                                                 shareTypes: healthDataManager.typesToRead,
-                                                 readTypes: healthDataManager.typesToRead,
-                                                 trigger: HKtrigger) { result in
-                            switch result {
-                                
-                            case .success(_):
-                                print("HealthKit authorized")
-                                healthDataManager.authorization = true
-                                healthDataManager.fetchData()
-                            case .failure(let error):
-                                // Handle the error here.
-                                fatalError("*** An error occurred while requesting authentication: \(error) ***")
-                            }
-                        }
+                    }) {
+                        Text("Connect")
+                            .font(.system(size: 28))
+                            .padding(15)
+                            .padding([.leading, .trailing])
+                            .background(.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(30)
                     }
-                    else {
-                        // Connect button.
-                        Button(action: {
-                            guard let peripheral = bluetoothManager.esp32Peripheral else { return }
-                            bluetoothManager.connect() { success in
-                                if success {
-                                    // Connection successful, send the command
-                                    isConnected = true
-                                    bluetoothManager.sendCommand(command: SendData(data: "Connected".data(using: .utf8)!))
-                                } else {
-                                    // Connection failed, handle the error
-                                    isConnected = false
-                                    print("Failed to connect to the device.")
-                                }
-                            }
-                        }) {
-                            Text("Connect")
-                                .font(.system(size: 28))
-                                .padding(15)
-                                .padding([.leading, .trailing])
-                                .background(.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(30)
-                            
-                        }
-                        .disabled(bluetoothManager.esp32Peripheral == nil)
-                        .buttonStyle(PlainButtonStyle())
+                    .disabled(bluetoothManager.esp32Peripheral == nil)
+                    .buttonStyle(PlainButtonStyle())
+
+                    // Settings button.
+                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager)) {
+                        Text("Mirror Settings")
+                            .font(.system(size: 28))
+                            .padding(15)
+                            .padding([.leading, .trailing])
+                            .background(.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(30)
                     }
                     
                     // If the esp32 isn't found, display that it is searching and the most recent device scanned.
@@ -152,24 +113,10 @@ struct ContentView: View {
                             
                             // Discovered ____ text
                             let peripheral = String(bluetoothManager.mostRecentPeripheral ?? "")
-                            let description = String(bluetoothManager.mostRecentDescription ?? "")
-                            if peripheral != "" && description != "" {
-                                Text("Discovered \(peripheral): \(description)")
+                            if peripheral != "" {
+                                Text("Discovered \(peripheral)")
                             }
                         }
-                        else {
-                            Text("Found Device!")
-                        }
-                    }
-                    // Settings button.
-                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager)) {
-                        Text("Mirror Settings")
-                            .font(.system(size: 28))
-                            .padding(15)
-                            .padding([.leading, .trailing])
-                            .background(.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(30)
                     }
                     
                     Spacer()
@@ -185,8 +132,8 @@ struct ContentView: View {
                 Spacer()
                  
             }
-        
-            .navigationTitle("Home Page")
+            .navigationTitle("Home")
+            .modifier(ColorSchemeModifier(colorScheme: colorScheme))
         }
     }
     
@@ -206,27 +153,85 @@ struct ContentView: View {
         timer?.invalidate()
         timer = nil
     }
-    
-    func sendCommands() {
-        bluetoothManager.sendCommand(command: SendData(data: "Test".data(using: .utf8)!))
-    }
 }
 
 struct SettingsView: View {
     @Binding var isConnected: Bool
     @Binding var bluetoothDebugToggle: Bool
     @Binding var healthDataToggle: Bool
-    @ObservedObject var bluetoothManager: BluetoothManager
+    
+    @AppStorage("selectedAppearance") var selectedAppearance = 0
+    
+    var bluetoothManager: BluetoothManager
     var healthDataManager: HealthDataManager
     
     var body: some View {
         Form {
-            Toggle("Bluetooth Debug", isOn: $bluetoothDebugToggle)
-                .disabled(isConnected)
-            Toggle("Send Health Data", isOn: $healthDataToggle)
-                .disabled(isConnected)
+            Picker("Color Scheme", selection: $selectedAppearance) {
+                Text("Default System")
+                    .tag(0)
+                Text("Light")
+                    .tag(1)
+                Text("Dark")
+                    .tag(2)
+            }
+            .pickerStyle(.inline)
+            
+            Section("Bluetooth") {
+                Toggle("Bluetooth Debug", isOn: $bluetoothDebugToggle)
+                    .disabled(isConnected)
+            }
+            Section("Health") {
+                Toggle("Show Health Data", isOn: $healthDataToggle)
+                    .disabled(!isConnected)
+            }
+            
+            /*
+            Section("Weather") {
+                Toggle("Show Weather Data", isOn: $healthDataToggle)
+                    .disabled(!isConnected)
+            }
+             */
         }
-        .navigationTitle("Mirror Settings")
+        .navigationTitle("Settings")
+        .onChange(of: healthDataToggle) { newValue in
+            if newValue {
+                healthDataManager.requestAuthorization()
+                
+                if isConnected {
+                    healthDataManager.heartRateCompletion = { heart in
+                        DispatchQueue.main.async {
+                            print("Sending heart rate")
+                            bluetoothManager.sendCommand(command: SendData(data: heart.data(using: .utf8)!))
+                        }
+                    }
+                    healthDataManager.stepCountCompletion = { steps in
+                        DispatchQueue.main.async {
+                            print("Sending step count")
+                            bluetoothManager.sendCommand(command: SendData(data: steps.data(using: .utf8)!))
+                        }
+                    }
+                    healthDataManager.caloriesBurnedCompletion = { cals in
+                        DispatchQueue.main.async {
+                            print("Sending calories burned")
+                            bluetoothManager.sendCommand(command: SendData(data: cals.data(using: .utf8)!))
+                        }
+                    }
+                    healthDataManager.alcoholicBeveragesCompletion = { alc in
+                        DispatchQueue.main.async {
+                            print("Sending alcoholic beverages")
+                            bluetoothManager.sendCommand(command: SendData(data: alc.data(using: .utf8)!))
+                        }
+                    }
+                }
+            }
+            else {
+                if healthDataManager.fetching {
+                    print("Stopping HealthKit fetch")
+                    healthDataManager.stopFetchData()
+                }
+            }
+        }
     }
 }
 

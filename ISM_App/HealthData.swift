@@ -3,102 +3,172 @@
 //  ISM App
 //
 
-import Foundation
 import HealthKit
 
 class HealthDataManager {
     let healthStore = HKHealthStore()
-    var authorization: Bool = false
+    var fetching: Bool = false
+    var lastHeartRateValue: Double? = nil
+    var query: HKQuery?
     
     // Data to read from health app.
     let typesToRead: Set = [
         HKQuantityType(.stepCount),
         HKQuantityType(.activeEnergyBurned),
-        HKQuantityType(.heartRate)
+        HKQuantityType(.heartRate),
+        HKQuantityType(.numberOfAlcoholicBeverages)
     ]
+    
+    typealias Completion = (String) -> Void
+    
+    var heartRateCompletion: Completion?
+    var stepCountCompletion: Completion?
+    var caloriesBurnedCompletion: Completion?
+    var alcoholicBeveragesCompletion: Completion?
+    
+    func requestAuthorization() {
+        healthStore.requestAuthorization(toShare: nil, read: typesToRead) { (success, error) in
+            if success {
+                print("HealthKit authorization granted.")
+                self.fetchData()
+            }
+            else {
+                print("HealthKit authorization denied.")
+            }
+        }
+    }
+    
+    func stopFetchData() {
+        if let query = query {
+            healthStore.stop(query)
+        }
+    }
     
     // Fetch data for specific type.
     func fetchData() {
+        self.fetching = true
+        
         for dataType in typesToRead {
-            healthStore.enableBackgroundDelivery(for: dataType, frequency: HKUpdateFrequency.immediate, withCompletion: { (success, error) in
-                if let unwrappedError = error {
-                    print("*** Error: could not enable background delivery: \(unwrappedError) ***")
-                }
-                if success {
-                    print("Background delivery enabled")
-                }
-            })
-                
-            let query = HKObserverQuery(sampleType: dataType, predicate: nil) { query, completionHandler, error in
+            query = HKObserverQuery(sampleType: dataType, predicate: nil) { query, completionHandler, error in
                     if let error = error {
                         print(" *** Error while observing changes: \(error.localizedDescription) ***")
                         completionHandler()
                         return
                     }
-                    self.fetchLatestData(for: dataType)
-                    completionHandler()
-                }
-                
-                healthStore.execute(query)
-                                                 }
-    }
-    
-    func fetchLatestData(for sampleType: HKSampleType) {
-        switch sampleType.identifier {
-        case HKQuantityTypeIdentifier.heartRate.rawValue:
-            // Handle heart rate data
-            fetchLatestHeartRateData { result in
-                switch result {
-                case .success(let heartRate):
-                    print("Latest heart rate: \(heartRate) bpm")
-                case .failure(let error):
-                    print("Error fetching heart rate: \(error.localizedDescription)")
-                }
-            }
-            /*
-        case HKQuantityTypeIdentifier.stepCount.rawValue:
-            // Handle step count data
-            fetchLatestStepCountData { result in
-                switch result {
-                case .success(let stepCount):
-                    print("Latest step count: \(stepCount) steps")
-                case .failure(let error):
-                    print("Error fetching step count: \(error.localizedDescription)")
+                switch dataType.identifier {
+                case HKQuantityTypeIdentifier.heartRate.rawValue:
+                    self.fetchLatestHeartRateData() { str in
+                        self.heartRateCompletion?(str)
+                    }
+                case HKQuantityTypeIdentifier.stepCount.rawValue:
+                    self.fetchLatestDailyData(for: dataType) { str in
+                        self.stepCountCompletion?(str)
+                    }
+                case HKQuantityTypeIdentifier.activeEnergyBurned.rawValue:
+                    self.fetchLatestDailyData(for: dataType) { str in
+                        self.caloriesBurnedCompletion?(str)
+                    }
+                case HKQuantityTypeIdentifier.numberOfAlcoholicBeverages.rawValue:
+                    self.fetchLatestDailyData(for: dataType) { str in
+                        self.alcoholicBeveragesCompletion?(str)
+                    }
+                default:
+                    break
                 }
             }
-             */
-        default:
-            break
+            healthStore.execute(query!)
+            healthStore.enableBackgroundDelivery(for: dataType, frequency: HKUpdateFrequency.immediate, withCompletion: { (success, error) in
+                if let unwrappedError = error {
+                    print("*** Error: could not enable background delivery: \(unwrappedError) ***")
+                }
+                if success {
+                    print("Background delivery enabled for \(dataType.identifier)")
+                }
+            })
         }
     }
     
-    func fetchLatestHeartRateData(completion: @escaping (Result<Double, Error>) -> Void) {
-        let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate)!
-        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
-        let query = HKSampleQuery(sampleType: heartRateType, predicate: nil, limit: 1, sortDescriptors: [sortDescriptor]) { query, samples, error in
+    func fetchLatestHeartRateData(completion: @escaping (String) -> Void) {
+        var anchor: HKQueryAnchor?
+        
+        let sampleType = HKObjectType.quantityType(forIdentifier: .heartRate)
+        let anchoredQuery = HKAnchoredObjectQuery(type: sampleType!, predicate: nil, anchor: anchor, limit: HKObjectQueryNoLimit) { query, newSamples, deletedSamples, newAnchor, error in
             if let error = error {
-                completion(.failure(error))
+                print("*** Error while executing anchored query: \(error.localizedDescription) ***")
+                return
+            }
+
+            guard let newSamples = newSamples as? [HKQuantitySample], let sample = newSamples.last else {
+                print("*** Error: No heart rate samples found ***")
                 return
             }
             
-            guard let sample = samples?.first as? HKQuantitySample else {
-                completion(.failure(NSError(domain: "YourAppErrorDomain", code: 0, userInfo: [NSLocalizedDescriptionKey: "No heart rate data available"])))
-                return
-            }
+            anchor = newAnchor
             
-            let heartRateValue = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
-            completion(.success(heartRateValue))
+            let heartRateValue = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute()))
+            let str = "Heart Rate: \(heartRateValue)"
+            print(str)
+            completion(str)
         }
-        
-        healthStore.execute(query)
+
+        healthStore.execute(anchoredQuery)
     }
     
-    /*
-    func transmitHealthData(_ value: Double, for type: HealthDataType) {
-        let data = "\(type): \(value)".data(using: .utf8)!
-        let command = SendData(data: data)
+    func fetchLatestDailyData(for sampleType: HKQuantityType, completion: @escaping (String) -> Void) {
+        let calendar = Calendar.current
+        let now = Date()
+        let startOfDay = calendar.startOfDay(for: now)
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
         
-            //bluetoothManager.sendCommand(command: command)
+        let statsQuery = HKStatisticsQuery(quantityType: sampleType, quantitySamplePredicate: predicate, options: .cumulativeSum) { (statsQuery, result, error) in
+            if let error = error {
+                print("*** Error fetching daily data for \(sampleType.identifier): \(error.localizedDescription) ***")
+            }
+            
+            if let result = result, let sum = result.sumQuantity() {
+                switch sampleType.identifier {
+                case HKQuantityTypeIdentifier.activeEnergyBurned.rawValue:
+                    let unit = HKUnit.kilocalorie()
+                    let daily = sum.doubleValue(for: unit)
+                    let str = "Calories Burned: \(daily)"
+                    print(str)
+                    completion(str)
+
+                case HKQuantityTypeIdentifier.stepCount.rawValue:
+                    let unit = HKUnit.count()
+                    let daily = sum.doubleValue(for: unit)
+                    let str = "Step Count: \(daily)"
+                    print(str)
+                    completion(str)
+                    
+                case HKQuantityTypeIdentifier.numberOfAlcoholicBeverages.rawValue:
+                    let unit = HKUnit.count()
+                    let daily = sum.doubleValue(for: unit)
+                    let str = "Alcoholic Beverages: \(daily)"
+                    print(str)
+                    completion(str)
+                
+                default:
+                    print("Unrecognized daily value: \(sampleType.identifier)")
+                }
+            }
+            else {
+                print("No data available for \(sampleType.identifier)")
+                
+                switch sampleType.identifier {
+                case HKQuantityTypeIdentifier.activeEnergyBurned.rawValue:
+                    completion("Calories Burned: 0.0")
+                    
+                case HKQuantityTypeIdentifier.stepCount.rawValue:
+                    completion("Step Count: 0")
+                    
+                case HKQuantityTypeIdentifier.numberOfAlcoholicBeverages.rawValue:
+                    completion("Alcoholic Beverages: 0")
+                default:
+                    print("Unrecognized daily value: \(sampleType.identifier)")
+                }
+            }
+        }
+        healthStore.execute(statsQuery)
     }
-     */
 }

@@ -27,7 +27,7 @@ class BluetoothManager : NSObject, ObservableObject {
     private let characteristicUUID = CBUUID(string: "3dee")
     
     var mostRecentPeripheral: String? = nil
-    var mostRecentDescription: String? = nil
+    
 
     override init() {
         super.init()
@@ -69,7 +69,6 @@ extension BluetoothManager: CBCentralManagerDelegate {
         if name != "nil" {
             print("Discovered \(name) at \(rssi)")
             mostRecentPeripheral = peripheral.name
-            mostRecentDescription = peripheral.description
         }
         
         if peripheral.name == "ESP32-BLE-Server" {
