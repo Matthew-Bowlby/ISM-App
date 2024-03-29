@@ -106,8 +106,8 @@ class HealthDataManager {
             anchor = newAnchor
             
             let heartRateValue = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute()))
-            let str = "Heart Rate: \(heartRateValue)"
-            print(str)
+            let str = "Heart: \(heartRateValue)"
+            print("Heart Rate: \(heartRateValue)")
             completion(str)
         }
 
@@ -130,22 +130,22 @@ class HealthDataManager {
                 case HKQuantityTypeIdentifier.activeEnergyBurned.rawValue:
                     let unit = HKUnit.kilocalorie()
                     let daily = sum.doubleValue(for: unit)
-                    let str = "Calories Burned: \(daily)"
-                    print(str)
+                    let str = "CaloB: \(daily)"
+                    print("Calories Burned: \(daily)")
                     completion(str)
 
                 case HKQuantityTypeIdentifier.stepCount.rawValue:
                     let unit = HKUnit.count()
                     let daily = sum.doubleValue(for: unit)
-                    let str = "Step Count: \(daily)"
-                    print(str)
+                    let str = "StepC: \(daily)"
+                    print("Step Count: \(daily)")
                     completion(str)
                     
                 case HKQuantityTypeIdentifier.numberOfAlcoholicBeverages.rawValue:
                     let unit = HKUnit.count()
                     let daily = sum.doubleValue(for: unit)
-                    let str = "Alcoholic Beverages: \(daily)"
-                    print(str)
+                    let str = "AlcoB: \(daily)"
+                    print("Alcoholic Beverages: \(daily)")
                     completion(str)
                 
                 default:
@@ -157,13 +157,13 @@ class HealthDataManager {
                 
                 switch sampleType.identifier {
                 case HKQuantityTypeIdentifier.activeEnergyBurned.rawValue:
-                    completion("Calories Burned: 0.0")
+                    completion("CaloB: 0.0")
                     
                 case HKQuantityTypeIdentifier.stepCount.rawValue:
-                    completion("Step Count: 0")
+                    completion("StepC: 0")
                     
                 case HKQuantityTypeIdentifier.numberOfAlcoholicBeverages.rawValue:
-                    completion("Alcoholic Beverages: 0")
+                    completion("AlcoB: 0")
                 default:
                     print("Unrecognized daily value: \(sampleType.identifier)")
                 }

@@ -10,6 +10,8 @@
 		F301F7452B9030AC0038FD5E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F301F7442B9030AC0038FD5E /* ContentView.swift */; };
 		F301F7472B903C360038FD5E /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F301F7462B903C360038FD5E /* HealthData.swift */; };
 		F37CB7DB2BB6137000AA60C6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CB7DA2BB6137000AA60C6 /* Settings.swift */; };
+		F3CFCA682BB7250800C31868 /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CFCA672BB7250800C31868 /* WeatherData.swift */; };
+		F3CFCA6A2BB72A1B00C31868 /* LocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CFCA692BB72A1B00C31868 /* LocationData.swift */; };
 		F3E733DF2B82BA380001FB4B /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E733DE2B82BA380001FB4B /* App.swift */; };
 		F3E733E12B82BA380001FB4B /* BLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E733E02B82BA380001FB4B /* BLE.swift */; };
 		F3E733E32B82BA390001FB4B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3E733E22B82BA390001FB4B /* Assets.xcassets */; };
@@ -40,6 +42,8 @@
 		F301F7442B9030AC0038FD5E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F301F7462B903C360038FD5E /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
 		F37CB7DA2BB6137000AA60C6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		F3CFCA672BB7250800C31868 /* WeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherData.swift; sourceTree = "<group>"; };
+		F3CFCA692BB72A1B00C31868 /* LocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationData.swift; sourceTree = "<group>"; };
 		F3E3701E2B92479B001D1D4B /* ISM_App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ISM_App.entitlements; sourceTree = "<group>"; };
 		F3E733DB2B82BA380001FB4B /* ISM_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ISM_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3E733DE2B82BA380001FB4B /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
@@ -81,6 +85,7 @@
 		F3E733D22B82BA380001FB4B = {
 			isa = PBXGroup;
 			children = (
+				F3CFCA692BB72A1B00C31868 /* LocationData.swift */,
 				F3E733DD2B82BA380001FB4B /* ISM_App */,
 				F3E733EE2B82BA390001FB4B /* ISM AppTests */,
 				F3E733F82B82BA390001FB4B /* ISM AppUITests */,
@@ -104,6 +109,7 @@
 				F3E3701E2B92479B001D1D4B /* ISM_App.entitlements */,
 				F3E733DE2B82BA380001FB4B /* App.swift */,
 				F301F7462B903C360038FD5E /* HealthData.swift */,
+				F3CFCA672BB7250800C31868 /* WeatherData.swift */,
 				F3E733E02B82BA380001FB4B /* BLE.swift */,
 				F301F7442B9030AC0038FD5E /* ContentView.swift */,
 				F37CB7DA2BB6137000AA60C6 /* Settings.swift */,
@@ -272,6 +278,8 @@
 				F3E733DF2B82BA380001FB4B /* App.swift in Sources */,
 				F301F7452B9030AC0038FD5E /* ContentView.swift in Sources */,
 				F301F7472B903C360038FD5E /* HealthData.swift in Sources */,
+				F3CFCA6A2BB72A1B00C31868 /* LocationData.swift in Sources */,
+				F3CFCA682BB7250800C31868 /* WeatherData.swift in Sources */,
 				F37CB7DB2BB6137000AA60C6 /* Settings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -445,9 +453,10 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allow for Bluetooth use.";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Please allow using Bluetooth to discover the mirror.";
-				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "Your health data records are needed on the ISM.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Your health data will be shared to the ISM.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Your health data will be used on the ISM.";
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "This app shares your health records with the mirror.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app shares your health data with the mirror.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app shares current health data with the mirror.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your location to send current weather data to the mirror.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -488,9 +497,10 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Allow for Bluetooth use.";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Please allow using Bluetooth to discover the mirror.";
-				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "Your health data records are needed on the ISM.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Your health data will be shared to the ISM.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Your health data will be used on the ISM.";
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "This app shares your health records with the mirror.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app shares your health data with the mirror.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app shares current health data with the mirror.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your location to send current weather data to the mirror.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

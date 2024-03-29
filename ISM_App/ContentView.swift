@@ -13,11 +13,14 @@ struct ContentView: View {
     @State private var showingAlert = false
     @State private var bluetoothDebugToggle = true
     @State private var healthDataToggle = false
+    @State private var weatherDataToggle = false
     @State private var dots = "."
     @State private var timer: Timer?
     
     var bluetoothManager = BluetoothManager()
     var healthDataManager = HealthDataManager()
+    var weatherDataManager = WeatherDataManager()
+    var locationDataManager = LocationDataManager()
     
     var body: some View {
         NavigationView {
@@ -29,6 +32,7 @@ struct ContentView: View {
                     Button(action: {
                         isConnected = false
                         bluetoothManager.sendCommand(command: SendData(data: "Disconnected".data(using: .utf8)!))
+                        healthDataManager.stopFetchData()
                         bluetoothManager.disconnect()
                     }) {
                         Text("Disconnect")
@@ -42,7 +46,7 @@ struct ContentView: View {
                     .buttonStyle(PlainButtonStyle())
                     
                     // Settings button.
-                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager)) {
+                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, locationDataManager: locationDataManager)) {
                         Text("Mirror Settings")
                             .font(.system(size: 28))
                             .padding(15)
@@ -89,7 +93,7 @@ struct ContentView: View {
                     .buttonStyle(PlainButtonStyle())
 
                     // Settings button.
-                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager)) {
+                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, locationDataManager: locationDataManager)) {
                         Text("Mirror Settings")
                             .font(.system(size: 28))
                             .padding(15)
@@ -159,11 +163,14 @@ struct SettingsView: View {
     @Binding var isConnected: Bool
     @Binding var bluetoothDebugToggle: Bool
     @Binding var healthDataToggle: Bool
+    @Binding var weatherDataToggle: Bool
     
     @AppStorage("selectedAppearance") var selectedAppearance = 0
     
     var bluetoothManager: BluetoothManager
     var healthDataManager: HealthDataManager
+    var weatherDataManager: WeatherDataManager
+    var locationDataManager: LocationDataManager
     
     var body: some View {
         Form {
@@ -186,12 +193,11 @@ struct SettingsView: View {
                     .disabled(!isConnected)
             }
             
-            /*
             Section("Weather") {
-                Toggle("Show Weather Data", isOn: $healthDataToggle)
+                Toggle("Show Weather Data", isOn: $weatherDataToggle)
                     .disabled(!isConnected)
             }
-             */
+            
         }
         .navigationTitle("Settings")
         .onChange(of: healthDataToggle) { newValue in
@@ -230,6 +236,29 @@ struct SettingsView: View {
                     print("Stopping HealthKit fetch")
                     healthDataManager.stopFetchData()
                 }
+            }
+        }
+        
+        .onChange(of: weatherDataToggle) { newValue in
+            if newValue {
+                if locationDataManager.status {
+                    locationDataManager.startServices()
+                }
+                
+                if locationDataManager.authorization == .authorizedWhenInUse {
+                    Task {
+                        await weatherDataManager.getWeather(latitude: locationDataManager.latitude, longitude: locationDataManager.longitude)
+                        print("Temperature: \(weatherDataManager.temperature), Condition: \(weatherDataManager.condition)")
+                        
+                        if isConnected {
+                            bluetoothManager.sendCommand(command: SendData(data: "TempF: \(weatherDataManager.temperature)".data(using: .utf8)!))
+                            bluetoothManager.sendCommand(command: SendData(data: "Condi: \(weatherDataManager.condition)".data(using: .utf8)!))
+                        }
+                    }
+                }
+            }
+            else {
+                locationDataManager.stopServices()
             }
         }
     }
