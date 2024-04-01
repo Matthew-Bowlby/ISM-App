@@ -27,6 +27,7 @@ class BluetoothManager : NSObject, ObservableObject {
     private let characteristicUUID = CBUUID(string: "3dee")
     
     var mostRecentPeripheral: String? = nil
+    @Published var isConnected: Bool = false
     
 
     override init() {
@@ -84,6 +85,11 @@ extension BluetoothManager: CBCentralManagerDelegate {
         peripheral.delegate = self
         peripheral.discoverServices([esp32ServiceUUID])
     }
+    
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        print("Peripheral disconnected")
+        isConnected = false
+    }
 
     func connect(completion: @escaping (Bool) -> Void) {
         // Check if esp32Peripheral is not nil
@@ -107,7 +113,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
          centralManager?.connect(peripheral, options: nil)
         
          // 1.5 second delay currently.
-         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
              if peripheral.state == .connected {
                  completion(true)
              } else {
@@ -122,16 +128,8 @@ extension BluetoothManager: CBCentralManagerDelegate {
             return
         }
         centralManager?.cancelPeripheralConnection(peripheral)
+        isConnected = false
         print("Disconnected.")
-    }
-    
-    // Check if peripheral is still connected.
-    func checkPeripheralActivity() -> Bool {
-        guard let peripheral = esp32Peripheral else {
-            return false
-        }
-        
-        return peripheral.state == .connected
     }
 }
 

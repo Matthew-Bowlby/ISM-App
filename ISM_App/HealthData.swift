@@ -5,7 +5,7 @@
 
 import HealthKit
 
-class HealthDataManager {
+class HealthDataManager : ObservableObject {
     let healthStore = HKHealthStore()
     var fetching: Bool = false
     var lastHeartRateValue: Double? = nil
@@ -16,7 +16,8 @@ class HealthDataManager {
         HKQuantityType(.stepCount),
         HKQuantityType(.activeEnergyBurned),
         HKQuantityType(.heartRate),
-        HKQuantityType(.numberOfAlcoholicBeverages)
+        HKQuantityType(.restingHeartRate),
+        HKQuantityType(.distanceWalkingRunning)
     ]
     
     typealias Completion = (String) -> Void
@@ -24,7 +25,9 @@ class HealthDataManager {
     var heartRateCompletion: Completion?
     var stepCountCompletion: Completion?
     var caloriesBurnedCompletion: Completion?
-    var alcoholicBeveragesCompletion: Completion?
+    //var restingHeartRateCompletion: Completion?
+    var distanceCompletion: Completion?
+    var alcoholCompletion: Completion?
     
     func requestAuthorization() {
         healthStore.requestAuthorization(toShare: nil, read: typesToRead) { (success, error) in
@@ -68,9 +71,19 @@ class HealthDataManager {
                     self.fetchLatestDailyData(for: dataType) { str in
                         self.caloriesBurnedCompletion?(str)
                     }
+                /*
+                case HKQuantityTypeIdentifier.restingHeartRate.rawValue:
+                    self.fetchLatestDailyData(for: dataType) { str in
+                        self.restingHeartRateCompletion?(str)
+                    }
+                 */
+                case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue:
+                    self.fetchLatestDailyData(for: dataType) { str in
+                        self.distanceCompletion?(str)
+                    }
                 case HKQuantityTypeIdentifier.numberOfAlcoholicBeverages.rawValue:
                     self.fetchLatestDailyData(for: dataType) { str in
-                        self.alcoholicBeveragesCompletion?(str)
+                        self.alcoholCompletion?(str)
                     }
                 default:
                     break
@@ -129,23 +142,37 @@ class HealthDataManager {
                 switch sampleType.identifier {
                 case HKQuantityTypeIdentifier.activeEnergyBurned.rawValue:
                     let unit = HKUnit.kilocalorie()
-                    let daily = sum.doubleValue(for: unit)
+                    let daily = String(format: "%.2f", sum.doubleValue(for: unit))
                     let str = "CaloB: \(daily)"
                     print("Calories Burned: \(daily)")
                     completion(str)
 
                 case HKQuantityTypeIdentifier.stepCount.rawValue:
                     let unit = HKUnit.count()
-                    let daily = sum.doubleValue(for: unit)
+                    let daily = String(format: "%.2f", sum.doubleValue(for: unit))
                     let str = "StepC: \(daily)"
                     print("Step Count: \(daily)")
                     completion(str)
-                    
-                case HKQuantityTypeIdentifier.numberOfAlcoholicBeverages.rawValue:
+                /*
+                case HKQuantityTypeIdentifier.restingHeartRate.rawValue:
                     let unit = HKUnit.count()
                     let daily = sum.doubleValue(for: unit)
+                    let str = "RestH: \(daily)"
+                    print("Resting Heart Rate: \(daily)")
+                    completion(str)
+                */
+                case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue:
+                    let unit = HKUnit.mile()
+                    let daily = String(format: "%.2f", sum.doubleValue(for: unit))
+                    let str = "DistW: \(daily)"
+                    print("Distance Walking/Running: \(daily)")
+                    completion(str)
+                
+                case HKQuantityTypeIdentifier.numberOfAlcoholicBeverages.rawValue:
+                    let unit = HKUnit.count()
+                    let daily = String(format: "%.2f", sum.doubleValue(for: unit))
                     let str = "AlcoB: \(daily)"
-                    print("Alcoholic Beverages: \(daily)")
+                    print("Number of Alcoholic Beverages: \(daily)")
                     completion(str)
                 
                 default:
@@ -161,9 +188,18 @@ class HealthDataManager {
                     
                 case HKQuantityTypeIdentifier.stepCount.rawValue:
                     completion("StepC: 0")
-                    
+                 
+                /*
+                case HKQuantityTypeIdentifier.restingHeartRate.rawValue:
+                    completion("RestH: 0")
+                */
+                 
+                case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue:
+                    completion("DistW: 0")
+                
                 case HKQuantityTypeIdentifier.numberOfAlcoholicBeverages.rawValue:
                     completion("AlcoB: 0")
+                    
                 default:
                     print("Unrecognized daily value: \(sampleType.identifier)")
                 }

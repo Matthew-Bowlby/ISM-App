@@ -18,14 +18,22 @@ class WeatherDataManager {
         }
     }
     
-    var temperature: String {
+    var temperature: Int {
         let temp = weather?.currentWeather.temperature
-        let convert = temp?.converted(to: .fahrenheit).description
+        let convert = Int(temp?.converted(to: .fahrenheit).value ?? 0)
         
-        return convert ?? "Loading Weather Data"
+        return convert
     }
     
     var condition: String {
-        return weather?.currentWeather.condition.rawValue ?? "Loading Weather Data"
+        return weather?.currentWeather.condition.rawValue ?? "n/a"
+    }
+    
+    var uvIndex: Int {
+        return weather?.currentWeather.uvIndex.value ?? 0
+    }
+    
+    var humidity: Int {
+        return Int((weather?.currentWeather.humidity ?? 0) * 100)
     }
 }

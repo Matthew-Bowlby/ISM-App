@@ -85,7 +85,6 @@
 		F3E733D22B82BA380001FB4B = {
 			isa = PBXGroup;
 			children = (
-				F3CFCA692BB72A1B00C31868 /* LocationData.swift */,
 				F3E733DD2B82BA380001FB4B /* ISM_App */,
 				F3E733EE2B82BA390001FB4B /* ISM AppTests */,
 				F3E733F82B82BA390001FB4B /* ISM AppUITests */,
@@ -106,6 +105,7 @@
 		F3E733DD2B82BA380001FB4B /* ISM_App */ = {
 			isa = PBXGroup;
 			children = (
+				F3CFCA692BB72A1B00C31868 /* LocationData.swift */,
 				F3E3701E2B92479B001D1D4B /* ISM_App.entitlements */,
 				F3E733DE2B82BA380001FB4B /* App.swift */,
 				F301F7462B903C360038FD5E /* HealthData.swift */,
