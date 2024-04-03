@@ -7,6 +7,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
+    @State private var isConnected: Bool = false
     @State private var HKtrigger: Bool = false
     @State private var authorization: Bool = false
     @State private var showingAlert = false
@@ -17,20 +18,21 @@ struct ContentView: View {
     @State private var dots = "."
     @State private var timer: Timer?
     
-    @ObservedObject var bluetoothManager = BluetoothManager()
-    @ObservedObject var healthDataManager = HealthDataManager()
+    var bluetoothManager = BluetoothManager()
+    var healthDataManager = HealthDataManager()
     var weatherDataManager = WeatherDataManager()
     var eventDataManager = EventDataManager()
-    @ObservedObject var locationDataManager = LocationDataManager()
+    var locationDataManager = LocationDataManager()
     
     var body: some View {
         NavigationView {
             VStack {
                 Spacer()
                  
-                if bluetoothManager.isConnected {
+                if isConnected {
                     // Disconnect button.
                     Button(action: {
+                        isConnected = false
                         bluetoothManager.sendCommand(command: SendData(data: "Disconnected".data(using: .utf8)!))
                         healthDataManager.stopFetchData()
                         bluetoothManager.disconnect()
@@ -46,8 +48,7 @@ struct ContentView: View {
                     .buttonStyle(PlainButtonStyle())
                     
                     // Settings button.
-                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
-
+                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, eventDataToggle: $eventDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
                         Text("Mirror Settings")
                             .font(.system(size: 28))
                             .padding(15)
@@ -73,11 +74,11 @@ struct ContentView: View {
                         bluetoothManager.connect() { success in
                             if success {
                                 // Connection successful, send the command
-                                bluetoothManager.isConnected = true
+                                isConnected = true
                                 bluetoothManager.sendCommand(command: SendData(data: "Connected".data(using: .utf8)!))
                             } else {
                                 // Connection failed, handle the error
-                                bluetoothManager.isConnected = false
+                                isConnected = false
                                 print("Failed to connect to the device.")
                             }
                         }
@@ -94,8 +95,7 @@ struct ContentView: View {
                     .buttonStyle(PlainButtonStyle())
 
                     // Settings button.
-                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
-
+                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, eventDataToggle: $eventDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
                         Text("Mirror Settings")
                             .font(.system(size: 28))
                             .padding(15)
@@ -162,6 +162,7 @@ struct ContentView: View {
 }
 
 struct SettingsView: View {
+    @Binding var isConnected: Bool
     @Binding var bluetoothDebugToggle: Bool
     @Binding var healthDataToggle: Bool
     @Binding var weatherDataToggle: Bool
@@ -189,21 +190,21 @@ struct SettingsView: View {
             
             Section("Bluetooth") {
                 Toggle("Bluetooth Debug", isOn: $bluetoothDebugToggle)
-                    .disabled(bluetoothManager.isConnected)
+                    .disabled(isConnected)
             }
             Section("Health") {
                 Toggle("Show Health Data", isOn: $healthDataToggle)
-                    .disabled(!bluetoothManager.isConnected)
+                    .disabled(!isConnected)
             }
             
             Section("Weather") {
                 Toggle("Show Weather Data", isOn: $weatherDataToggle)
-                    .disabled(!bluetoothManager.isConnected)
+                    .disabled(!isConnected)
             }
             
             Section("Events") {
                 Toggle("Show Event Data", isOn: $eventDataToggle)
-                    .disabled(!bluetoothManager.isConnected)
+                    .disabled(!isConnected)
             }
             
         }
@@ -212,7 +213,7 @@ struct SettingsView: View {
             if newValue {
                 healthDataManager.requestAuthorization()
                 
-                if bluetoothManager.isConnected {
+                if isConnected {
                     healthDataManager.heartRateCompletion = { heart in
                         DispatchQueue.main.async {
                             print("Sending heart rate")
@@ -231,23 +232,9 @@ struct SettingsView: View {
                             bluetoothManager.sendCommand(command: SendData(data: cals.data(using: .utf8)!))
                         }
                     }
-                    /*
-                    healthDataManager.restingHeartRateCompletion = { rest in
+                    healthDataManager.alcoholicBeveragesCompletion = { alc in
                         DispatchQueue.main.async {
-                            print("Sending resting heart rate")
-                            bluetoothManager.sendCommand(command: SendData(data: rest.data(using: .utf8)!))
-                        }
-                    }
-                     */
-                    healthDataManager.distanceCompletion = { dist in
-                        DispatchQueue.main.async {
-                            print("Sending distance running/walking")
-                            bluetoothManager.sendCommand(command: SendData(data: dist.data(using: .utf8)!))
-                        }
-                    }
-                    healthDataManager.alcoholCompletion = { alc in
-                        DispatchQueue.main.async {
-                            print("Sending number of alcoholic beverages")
+                            print("Sending alcoholic beverages")
                             bluetoothManager.sendCommand(command: SendData(data: alc.data(using: .utf8)!))
                         }
                     }
@@ -270,16 +257,11 @@ struct SettingsView: View {
                 if locationDataManager.authorization == .authorizedWhenInUse {
                     Task {
                         await weatherDataManager.getWeather(latitude: locationDataManager.latitude, longitude: locationDataManager.longitude)
-                        print("Temperature: \(weatherDataManager.temperature)")
-                        print("Condition: \(weatherDataManager.condition)")
-                        print("UV Index: \(weatherDataManager.uvIndex)")
-                        print("Humidity: \(weatherDataManager.humidity)")
+                        print("Temperature: \(weatherDataManager.temperature), Condition: \(weatherDataManager.condition)")
                         
-                        if bluetoothManager.isConnected {
-                            bluetoothManager.sendCommand(command: SendData(data: "TempF: \( weatherDataManager.temperature)".data(using: .utf8)!))
+                        if isConnected {
+                            bluetoothManager.sendCommand(command: SendData(data: "TempF: \(weatherDataManager.temperature)".data(using: .utf8)!))
                             bluetoothManager.sendCommand(command: SendData(data: "Condi: \(weatherDataManager.condition)".data(using: .utf8)!))
-                            bluetoothManager.sendCommand(command: SendData(data: "UVInd: \(weatherDataManager.uvIndex)".data(using: .utf8)!))
-                            bluetoothManager.sendCommand(command: SendData(data: "Humid: \(weatherDataManager.humidity)".data(using: .utf8)!))
                         }
                     }
                 }
@@ -293,7 +275,7 @@ struct SettingsView: View {
             if newValue{
                 eventDataManager.requestAccess()
                 
-                if bluetoothManager.isConnected {
+                if isConnected {
                     bluetoothManager.sendCommand(command: SendData(data: "Events: \(eventDataManager.sortedEvents)".data(using: .utf8)!))
                 }
             }

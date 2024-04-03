@@ -20,8 +20,14 @@ struct ContentView: View {
     @ObservedObject var bluetoothManager = BluetoothManager()
     @ObservedObject var healthDataManager = HealthDataManager()
     var weatherDataManager = WeatherDataManager()
-    var eventDataManager = EventDataManager()
+<<<<<<< HEAD
     @ObservedObject var locationDataManager = LocationDataManager()
+||||||| ddc6350
+    var locationDataManager = LocationDataManager()
+=======
+    var eventDataManager = EventDataManager()
+    var locationDataManager = LocationDataManager()
+>>>>>>> main
     
     var body: some View {
         NavigationView {
@@ -46,8 +52,13 @@ struct ContentView: View {
                     .buttonStyle(PlainButtonStyle())
                     
                     // Settings button.
-                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
-
+<<<<<<< HEAD
+                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, locationDataManager: locationDataManager)) {
+||||||| ddc6350
+                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, locationDataManager: locationDataManager)) {
+=======
+                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, eventDataToggle: $eventDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
+>>>>>>> main
                         Text("Mirror Settings")
                             .font(.system(size: 28))
                             .padding(15)
@@ -94,8 +105,13 @@ struct ContentView: View {
                     .buttonStyle(PlainButtonStyle())
 
                     // Settings button.
-                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
-
+<<<<<<< HEAD
+                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, locationDataManager: locationDataManager)) {
+||||||| ddc6350
+                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, locationDataManager: locationDataManager)) {
+=======
+                    NavigationLink(destination: SettingsView(isConnected: $isConnected, bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, eventDataToggle: $eventDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
+>>>>>>> main
                         Text("Mirror Settings")
                             .font(.system(size: 28))
                             .padding(15)
@@ -203,7 +219,7 @@ struct SettingsView: View {
             
             Section("Events") {
                 Toggle("Show Event Data", isOn: $eventDataToggle)
-                    .disabled(!bluetoothManager.isConnected)
+                    .disabled(!isConnected)
             }
             
         }
@@ -293,7 +309,7 @@ struct SettingsView: View {
             if newValue{
                 eventDataManager.requestAccess()
                 
-                if bluetoothManager.isConnected {
+                if isConnected {
                     bluetoothManager.sendCommand(command: SendData(data: "Events: \(eventDataManager.sortedEvents)".data(using: .utf8)!))
                 }
             }

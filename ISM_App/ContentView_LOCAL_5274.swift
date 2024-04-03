@@ -13,14 +13,12 @@ struct ContentView: View {
     @State private var bluetoothDebugToggle = true
     @State private var healthDataToggle = false
     @State private var weatherDataToggle = false
-    @State private var eventDataToggle = false
     @State private var dots = "."
     @State private var timer: Timer?
     
     @ObservedObject var bluetoothManager = BluetoothManager()
     @ObservedObject var healthDataManager = HealthDataManager()
     var weatherDataManager = WeatherDataManager()
-    var eventDataManager = EventDataManager()
     @ObservedObject var locationDataManager = LocationDataManager()
     
     var body: some View {
@@ -46,8 +44,7 @@ struct ContentView: View {
                     .buttonStyle(PlainButtonStyle())
                     
                     // Settings button.
-                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
-
+                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, locationDataManager: locationDataManager)) {
                         Text("Mirror Settings")
                             .font(.system(size: 28))
                             .padding(15)
@@ -94,8 +91,7 @@ struct ContentView: View {
                     .buttonStyle(PlainButtonStyle())
 
                     // Settings button.
-                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, eventDataManager: eventDataManager, locationDataManager: locationDataManager)) {
-
+                    NavigationLink(destination: SettingsView(bluetoothDebugToggle: $bluetoothDebugToggle, healthDataToggle: $healthDataToggle, weatherDataToggle: $weatherDataToggle, bluetoothManager: bluetoothManager, healthDataManager: healthDataManager, weatherDataManager: weatherDataManager, locationDataManager: locationDataManager)) {
                         Text("Mirror Settings")
                             .font(.system(size: 28))
                             .padding(15)
@@ -165,14 +161,12 @@ struct SettingsView: View {
     @Binding var bluetoothDebugToggle: Bool
     @Binding var healthDataToggle: Bool
     @Binding var weatherDataToggle: Bool
-    @Binding var eventDataToggle: Bool
     
     @AppStorage("selectedAppearance") var selectedAppearance = 0
     
     var bluetoothManager: BluetoothManager
     var healthDataManager: HealthDataManager
     var weatherDataManager: WeatherDataManager
-    var eventDataManager: EventDataManager
     var locationDataManager: LocationDataManager
     
     var body: some View {
@@ -198,11 +192,6 @@ struct SettingsView: View {
             
             Section("Weather") {
                 Toggle("Show Weather Data", isOn: $weatherDataToggle)
-                    .disabled(!bluetoothManager.isConnected)
-            }
-            
-            Section("Events") {
-                Toggle("Show Event Data", isOn: $eventDataToggle)
                     .disabled(!bluetoothManager.isConnected)
             }
             
@@ -288,17 +277,6 @@ struct SettingsView: View {
                 locationDataManager.stopServices()
             }
         }
-        
-        .onChange(of: eventDataToggle){ newValue in
-            if newValue{
-                eventDataManager.requestAccess()
-                
-                if bluetoothManager.isConnected {
-                    bluetoothManager.sendCommand(command: SendData(data: "Events: \(eventDataManager.sortedEvents)".data(using: .utf8)!))
-                }
-            }
-        }
-        
     }
 }
 
