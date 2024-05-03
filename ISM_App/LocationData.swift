@@ -58,14 +58,6 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
         }
     }
     
-    /*
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first {
-            print("Latitude: \(location.coordinate.latitude), Longitude: \(location.coordinate.longitude)")
-        }
-    }
-    */
-    
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("*** Error: Location update error: \(error.localizedDescription) ***")
     }

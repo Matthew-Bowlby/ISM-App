@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8F0256982BBDB4890030934D /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0256972BBDB4890030934D /* EventData.swift */; };
 		F301F7452B9030AC0038FD5E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F301F7442B9030AC0038FD5E /* ContentView.swift */; };
 		F301F7472B903C360038FD5E /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F301F7462B903C360038FD5E /* HealthData.swift */; };
 		F37CB7DB2BB6137000AA60C6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37CB7DA2BB6137000AA60C6 /* Settings.swift */; };
@@ -40,7 +39,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		8F0256972BBDB4890030934D /* EventData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventData.swift; sourceTree = "<group>"; };
 		F301F7442B9030AC0038FD5E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F301F7462B903C360038FD5E /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
 		F37CB7DA2BB6137000AA60C6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -114,7 +112,6 @@
 				F3CFCA672BB7250800C31868 /* WeatherData.swift */,
 				F3E733E02B82BA380001FB4B /* BLE.swift */,
 				F301F7442B9030AC0038FD5E /* ContentView.swift */,
-				8F0256972BBDB4890030934D /* EventData.swift */,
 				F37CB7DA2BB6137000AA60C6 /* Settings.swift */,
 				F3E733E22B82BA390001FB4B /* Assets.xcassets */,
 				F3E733E42B82BA390001FB4B /* Preview Content */,
@@ -283,7 +280,6 @@
 				F301F7472B903C360038FD5E /* HealthData.swift in Sources */,
 				F3CFCA6A2BB72A1B00C31868 /* LocationData.swift in Sources */,
 				F3CFCA682BB7250800C31868 /* WeatherData.swift in Sources */,
-				8F0256982BBDB4890030934D /* EventData.swift in Sources */,
 				F37CB7DB2BB6137000AA60C6 /* Settings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

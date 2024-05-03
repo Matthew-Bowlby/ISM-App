@@ -20,15 +20,15 @@ class HealthDataManager : ObservableObject {
         HKQuantityType(.distanceWalkingRunning)
     ]
     
+    // Sends completion string upon thread returning.
     typealias Completion = (String) -> Void
-    
     var heartRateCompletion: Completion?
     var stepCountCompletion: Completion?
     var caloriesBurnedCompletion: Completion?
-    //var restingHeartRateCompletion: Completion?
     var distanceCompletion: Completion?
     var alcoholCompletion: Completion?
     
+    // Requests authorization from user to grab data.
     func requestAuthorization() {
         healthStore.requestAuthorization(toShare: nil, read: typesToRead) { (success, error) in
             if success {
@@ -41,6 +41,7 @@ class HealthDataManager : ObservableObject {
         }
     }
     
+    // Stops fetching health data.
     func stopFetchData() {
         if let query = query {
             healthStore.stop(query)
@@ -71,12 +72,6 @@ class HealthDataManager : ObservableObject {
                     self.fetchLatestDailyData(for: dataType) { str in
                         self.caloriesBurnedCompletion?(str)
                     }
-                /*
-                case HKQuantityTypeIdentifier.restingHeartRate.rawValue:
-                    self.fetchLatestDailyData(for: dataType) { str in
-                        self.restingHeartRateCompletion?(str)
-                    }
-                 */
                 case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue:
                     self.fetchLatestDailyData(for: dataType) { str in
                         self.distanceCompletion?(str)
@@ -101,6 +96,7 @@ class HealthDataManager : ObservableObject {
         }
     }
     
+    // Handles heart rate specifically. Only parameter that is an anchored object query.
     func fetchLatestHeartRateData(completion: @escaping (String) -> Void) {
         var anchor: HKQueryAnchor?
         
@@ -127,6 +123,7 @@ class HealthDataManager : ObservableObject {
         healthStore.execute(anchoredQuery)
     }
     
+    // Handles other statistical data points.
     func fetchLatestDailyData(for sampleType: HKQuantityType, completion: @escaping (String) -> Void) {
         let calendar = Calendar.current
         let now = Date()
@@ -153,14 +150,7 @@ class HealthDataManager : ObservableObject {
                     let str = "StepC: \(daily)"
                     print("Step Count: \(daily)")
                     completion(str)
-                /*
-                case HKQuantityTypeIdentifier.restingHeartRate.rawValue:
-                    let unit = HKUnit.count()
-                    let daily = sum.doubleValue(for: unit)
-                    let str = "RestH: \(daily)"
-                    print("Resting Heart Rate: \(daily)")
-                    completion(str)
-                */
+                    
                 case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue:
                     let unit = HKUnit.mile()
                     let daily = String(format: "%.2f", sum.doubleValue(for: unit))
@@ -188,11 +178,6 @@ class HealthDataManager : ObservableObject {
                     
                 case HKQuantityTypeIdentifier.stepCount.rawValue:
                     completion("StepC: 0")
-                 
-                /*
-                case HKQuantityTypeIdentifier.restingHeartRate.rawValue:
-                    completion("RestH: 0")
-                */
                  
                 case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue:
                     completion("DistW: 0")

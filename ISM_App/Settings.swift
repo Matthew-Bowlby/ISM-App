@@ -10,6 +10,7 @@ struct ColorSchemeModifier: ViewModifier {
     @AppStorage("selectedAppearance") var selectedAppearance = 0
     var colorScheme: ColorScheme
     
+    // Handles theme change.s
     func body(content: Content) -> some View {
         switch selectedAppearance {
         case 1:
